@@ -1,0 +1,1223 @@
+openapi: 3.1.0
+info:
+  title: baifa-api
+  description: >
+    Especificación OpenAPI de la API RESTful **baifa-api**.
+    Desarrollada con Laravel 12 y Docker Compose (Nginx, PHP 8.4-FPM y MySQL 8.0).
+    Incluye autenticación mediante Bearer Tokens con **Laravel Sanctum** y control de roles:
+    Cliente (`client`), Empleado (`employee`), Jefe/Gerente (`manager`) y Administrador (`admin`).
+  version: 1.0.6
+  contact:
+    name: Juan Chirinos
+    email: juaneliezer13@gmail.com
+
+servers:
+  - url: http://localhost:14001/api
+    description: Entorno de Desarrollo Local (Docker)
+  - url: https://baifa-api.batdev.lat/api
+    description: Entorno de Producción (AWS EC2)
+
+tags:
+  - name: Autenticación
+    description: Registro, inicio de sesión, perfil y revocación de tokens con Laravel Sanctum.
+  - name: Sistema
+    description: Endpoints de diagnóstico, métricas y estado del sistema.
+  - name: Clientes
+    description: Directorio fiscal de empresas clientes, ficha jurídica y personas de contacto.
+  - name: Generadores
+    description: Catálogo de inventario, equipos asignados, métricas y control de estados (Etapa 2).
+  - name: Tracking / Checkpoints
+    description: Consulta rápida de trazabilidad por serial y registro manual de puntos de control inmutables (Etapas 3 y 4).
+
+paths:
+  /v1/health:
+    get:
+      tags:
+        - Sistema
+      summary: Diagnóstico y estado de salud de la API
+      description: Comprueba el estado del servicio y la conectividad activa con MySQL.
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: API y base de datos operativas correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          description: Error interno o pérdida de conexión con la base de datos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/auth/register:
+    post:
+      tags:
+        - Autenticación
+      summary: Registro de nuevo usuario
+      description: >
+        Crea una nueva cuenta de usuario en el sistema y emite inmediatamente un Bearer Token.
+        Si no se especifica rol, se asigna `client` por defecto. Despacha correo de bienvenida y registro al cliente (RN-NOTIF-02).
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente con token generado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          description: Errores de validación (email duplicado, contraseña corta, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /v1/auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Inicio de sesión
+      description: Autentica credenciales de usuario y emite un nuevo Bearer Token.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Credenciales válidas y token generado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          description: Credenciales incorrectas o campos faltantes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /v1/auth/me:
+    get:
+      tags:
+        - Autenticación
+      summary: Perfil del usuario autenticado
+      description: Retorna los datos y rol del usuario asociado al Bearer Token actual.
+      operationId: getAuthenticatedUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Datos del usuario autenticado.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: No autenticado o token inválido/expirado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/auth/logout:
+    post:
+      tags:
+        - Autenticación
+      summary: Cierre de sesión
+      description: Revoca y elimina el token de acceso actual en la base de datos.
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sesión cerrada y token revocado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: No autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/clients:
+    get:
+      tags:
+        - Clientes
+      summary: Listado del directorio fiscal de clientes
+      description: Retorna la lista de clientes con soporte para búsqueda textual y filtro de estado.
+      operationId: listClients
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: Término de búsqueda en razón social, nombre corto, RIF o contacto.
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filtrar por estado (active, inactive, all).
+          required: false
+          schema:
+            type: string
+            enum: [active, inactive, all]
+      responses:
+        '200':
+          description: Listado obtenido exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+        '401':
+          description: No autenticado.
+        '403':
+          description: Permisos insuficientes (exclusivo para personal operativo).
+
+    post:
+      tags:
+        - Clientes
+      summary: Registro de nueva empresa cliente
+      description: >
+        Da de alta una nueva empresa en el directorio fiscal y genera automáticamente una cuenta de usuario
+        con rol 'client' utilizando el nombre y correo de contacto, enviándole sus credenciales iniciales.
+      operationId: createClient
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreClientRequest'
+      responses:
+        '201':
+          description: Cliente registrado exitosamente y usuario vinculado autogenerado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Cliente y usuario de acceso creados exitosamente.
+                  client:
+                    $ref: '#/components/schemas/Client'
+        '422':
+          description: Error de validación (RIF duplicado, correo ya existente en usuarios, etc.).
+
+  /v1/clients/{id}:
+    get:
+      tags:
+        - Clientes
+      summary: Ficha técnica detallada de un cliente
+      operationId: getClient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ficha obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client:
+                    $ref: '#/components/schemas/Client'
+        '404':
+          description: Cliente no encontrado.
+
+    put:
+      tags:
+        - Clientes
+      summary: Actualización de datos de un cliente
+      description: >
+        Actualiza los datos fiscales o de contacto de una empresa cliente. Si se modifica el correo de contacto,
+        se sincroniza automáticamente con la cuenta de usuario vinculada.
+      operationId: updateClient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequest'
+      responses:
+        '200':
+          description: Cliente actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  client:
+                    $ref: '#/components/schemas/Client'
+
+    delete:
+      tags:
+        - Clientes
+      summary: Eliminación de cliente y usuario asociado
+      description: >
+        Elimina lógicamente (SoftDelete) la empresa del directorio fiscal y elimina definitivamente su usuario
+        cliente asociado en la tabla users, revocando todos sus tokens de acceso.
+      operationId: deleteClient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cliente y su usuario asociado eliminados exitosamente.
+
+  /v1/clients/{id}/toggle-status:
+    patch:
+      tags:
+        - Clientes
+      summary: Alternar estado activo / inactivo de un cliente
+      operationId: toggleClientStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Estado actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/generators/summary:
+    get:
+      tags:
+        - Generadores
+      summary: Resumen numérico y métricas de generadores por estado
+      description: Retorna contadores agregados por cada uno de los 5 estados operativos.
+      operationId: getGeneratorsSummary
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Métricas calculadas exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratorSummaryResponse'
+
+  /v1/generators:
+    get:
+      tags:
+        - Generadores
+      summary: Listado de generadores eléctricos del catálogo
+      description: Retorna los equipos registrados con filtros opcionales por búsqueda textual, estado y cliente.
+      operationId: getGenerators
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Término de búsqueda por serial, modelo o cliente.
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          description: Filtro por estado operativo.
+          schema:
+            $ref: '#/components/schemas/GeneratorStatus'
+        - name: client_id
+          in: query
+          required: false
+          description: Filtro por ID de cliente asociado.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Listado de generadores obtenido correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Generator'
+
+    post:
+      tags:
+        - Generadores
+      summary: Registrar nuevo generador eléctrico en inventario
+      description: Da de alta un nuevo equipo capturando serial, modelo, cliente, ETA y fotografía referencial.
+      operationId: storeGenerator
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StoreGeneratorRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreGeneratorRequest'
+      responses:
+        '201':
+          description: Generador registrado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  generator:
+                    $ref: '#/components/schemas/Generator'
+        '422':
+          description: Error de validación (serial duplicado, campos faltantes).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /v1/generators/{id}:
+    get:
+      tags:
+        - Generadores
+      summary: Ficha técnica detallada de un generador
+      operationId: getGeneratorById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ficha del generador obtenida con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  generator:
+                    $ref: '#/components/schemas/Generator'
+
+    put:
+      tags:
+        - Generadores
+      summary: Actualizar datos técnicos o estado de un generador
+      description: >
+        Actualiza los datos técnicos o estatus de un generador. Si el generador está asignado
+        a un cliente y se detectan cambios o transiciones de estatus, se despacha automáticamente
+        una notificación por correo electrónico al cliente (RN-NOTIF-04).
+      operationId: updateGenerator
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateGeneratorRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGeneratorRequest'
+      responses:
+        '200':
+          description: Generador actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  generator:
+                    $ref: '#/components/schemas/Generator'
+
+    delete:
+      tags:
+        - Generadores
+      summary: Eliminar lógicamente un generador del catálogo
+      operationId: deleteGenerator
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Generador eliminado con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /v1/tracking/{serial_number}:
+    get:
+      tags:
+        - Tracking / Checkpoints
+      summary: Consulta de trazabilidad de un generador por serial (Pública / Autenticada)
+      description: >
+        Obtiene la ficha de un generador y su historial de ruta a partir de su serial de fábrica.
+        Soporta consulta pública para visitantes sin sesión (datos limitados estilo MRW sin información
+        fiscal ni operarios) y ficha completa para personal interno y cliente propietario (RN-PRT-02, RN-TRK-01).
+      operationId: trackBySerial
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - name: serial_number
+          in: path
+          required: true
+          description: Serial de fábrica único del equipo (ej. GEN-2026-0041).
+          schema:
+            type: string
+            example: GEN-2026-0041
+      responses:
+        '200':
+          description: Información del generador y bitácora de trazabilidad.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  generator:
+                    $ref: '#/components/schemas/Generator'
+        '403':
+          description: Usuario con rol cliente no autorizado a consultar este equipo.
+        '404':
+          description: Generador no encontrado con el serial suministrado.
+
+  /v1/generators/{generator}/checkpoints:
+    get:
+      tags:
+        - Tracking / Checkpoints
+      summary: Listado cronológico de puntos de control de un generador
+      description: >
+        Devuelve la lista completa y ordenada cronológicamente de puntos de control
+        alcanzados por el generador (RN-BIT-01).
+      operationId: getCheckpoints
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: generator
+          in: path
+          required: true
+          description: ID numérico del generador.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Lista de checkpoints del generador.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Checkpoint'
+        '403':
+          description: Acceso no autorizado para el cliente.
+        '404':
+          description: Generador no encontrado.
+
+    post:
+      tags:
+        - Tracking / Checkpoints
+      summary: Registro manual de nuevo punto de control (avance de ruta)
+      description: >
+        Registra un evento inmutable en la bitácora del generador y actualiza
+        automáticamente su estado logístico principal (RN-TRK-01, RN-TRK-02).
+        Si el equipo está asignado a un cliente, despacha automáticamente una notificación por correo electrónico (RN-NOTIF-05).
+        Requiere rol admin, manager o employee.
+      operationId: storeCheckpoint
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: generator
+          in: path
+          required: true
+          description: ID numérico del generador.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreCheckpointRequest'
+      responses:
+        '201':
+          description: Punto de control registrado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Punto de control registrado exitosamente.
+                  checkpoint:
+                    $ref: '#/components/schemas/Checkpoint'
+                  generator:
+                    $ref: '#/components/schemas/Generator'
+        '403':
+          description: Rol no autorizado para registrar puntos de control.
+        '422':
+          description: Error de validación en los datos del punto de control.
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+      description: Introduce tu token Bearer emitido en /login o /register (ej. `Bearer 1|...`)
+
+  schemas:
+    UserRole:
+      type: string
+      enum:
+        - client
+        - employee
+        - manager
+        - admin
+      description: |
+        Rol de usuario dentro del mini-SaaS:
+        * `client`: Cliente final.
+        * `employee`: Empleado operativo.
+        * `manager`: Jefe o Gerente de área.
+        * `admin`: Administrador global del SaaS.
+      example: client
+
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - role
+        - role_label
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Juan Chirinos
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        role:
+          $ref: '#/components/schemas/UserRole'
+        role_label:
+          type: string
+          description: Nombre del rol legible en español.
+          example: Cliente
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-09-09T14:35:00+00:00'
+
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+        - company_fiscal_name
+        - rif
+      properties:
+        name:
+          type: string
+          description: Nombre completo de la persona de contacto.
+          example: Juan Chirinos
+        email:
+          type: string
+          format: email
+          description: Correo corporativo de contacto y credencial de acceso.
+          example: juan@example.com
+        company_fiscal_name:
+          type: string
+          description: Razón social oficial de la empresa cliente.
+          example: Inversiones Alpha C.A.
+        company_short_name:
+          type: string
+          description: Nombre comercial o corto de la empresa (opcional).
+          example: Alpha
+        rif:
+          type: string
+          description: Registro de Información Fiscal (formato venezolano obligatorio J-12345678-9).
+          example: J-12345678-9
+        phone:
+          type: string
+          description: Teléfono de contacto u oficina (opcional).
+          example: "+58 212 555-0123"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: secret1234
+        password_confirmation:
+          type: string
+          format: password
+          example: secret1234
+        role:
+          $ref: '#/components/schemas/UserRole'
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        password:
+          type: string
+          format: password
+          example: secret1234
+        device_name:
+          type: string
+          description: Nombre del dispositivo o cliente (opcional).
+          example: vue-spa-frontend
+
+    AuthResponse:
+      type: object
+      required:
+        - message
+        - access_token
+        - token_type
+        - user
+      properties:
+        message:
+          type: string
+          example: Inicio de sesión exitoso.
+        access_token:
+          type: string
+          description: Bearer Token generado por Sanctum.
+          example: 1|9a8b7c6d5e4f3a2b1c0d...
+        token_type:
+          type: string
+          example: Bearer
+        user:
+          $ref: '#/components/schemas/User'
+
+    MessageResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Sesión cerrada exitosamente.
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - app
+        - database
+        - timestamp
+      properties:
+        status:
+          type: string
+          example: ok
+        app:
+          type: string
+          example: baifa-api
+        database:
+          type: string
+          example: connected
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-09-09T14:35:00+00:00'
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - message
+        - errors
+      properties:
+        message:
+          type: string
+          example: Los datos proporcionados no son válidos.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email:
+              - El campo correo electrónico ya ha sido registrado.
+
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: No autenticado.
+
+    Client:
+      type: object
+      required:
+        - id
+        - company_fiscal_name
+        - company_short_name
+        - rif
+        - contact_name
+        - contact_email
+        - is_active
+        - status
+        - status_label
+      properties:
+        id:
+          type: integer
+          example: 1
+        company_fiscal_name:
+          type: string
+          example: Industrias Venezolanas Toro S.A.
+        company_short_name:
+          type: string
+          example: IndVen Toro
+        rif:
+          type: string
+          example: J-12345678-9
+        office_phone:
+          type: string
+          nullable: true
+          example: 0212-555-0100
+        contact_name:
+          type: string
+          example: Carlos Mendoza
+        contact_email:
+          type: string
+          format: email
+          example: cmendoza@indventoro.com.ve
+        contact_phone:
+          type: string
+          nullable: true
+          example: 0414-555-0101
+        is_active:
+          type: boolean
+          example: true
+        status:
+          type: string
+          enum: [active, inactive]
+          example: active
+        status_label:
+          type: string
+          example: Activo
+        user_id:
+          type: integer
+          nullable: true
+        registered_date:
+          type: string
+          format: date
+          example: '2026-09-10'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StoreClientRequest:
+      type: object
+      required:
+        - company_fiscal_name
+        - company_short_name
+        - rif
+        - contact_name
+        - contact_email
+      properties:
+        company_fiscal_name:
+          type: string
+          example: Industrias Venezolanas Toro S.A.
+        company_short_name:
+          type: string
+          example: IndVen Toro
+        rif:
+          type: string
+          example: J-12345678-9
+        office_phone:
+          type: string
+          nullable: true
+          example: 0212-555-0100
+        contact_name:
+          type: string
+          example: Carlos Mendoza
+        contact_email:
+          type: string
+          format: email
+          example: cmendoza@indventoro.com.ve
+        contact_phone:
+          type: string
+          nullable: true
+          example: 0414-555-0101
+        is_active:
+          type: boolean
+          example: true
+        user_id:
+          type: integer
+          nullable: true
+
+    UpdateClientRequest:
+      type: object
+      properties:
+        company_fiscal_name:
+          type: string
+        company_short_name:
+          type: string
+        rif:
+          type: string
+        office_phone:
+          type: string
+          nullable: true
+        contact_name:
+          type: string
+        contact_email:
+          type: string
+          format: email
+        contact_phone:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        user_id:
+          type: integer
+          nullable: true
+
+    GeneratorStatus:
+      type: string
+      enum:
+        - warehouse
+        - in_transit
+        - checkpoint
+        - delivered
+        - installed
+      description: |
+        Estado del ciclo logístico del generador:
+        * `warehouse`: En Almacén.
+        * `in_transit`: En Tránsito hacia destino.
+        * `checkpoint`: En Punto de Control / Alcabala.
+        * `delivered`: Entregado en locación del cliente.
+        * `installed`: Instalado y Operativo.
+      example: warehouse
+
+    Generator:
+      type: object
+      required:
+        - id
+        - serial_number
+        - model
+        - status
+        - status_label
+        - status_color
+      properties:
+        id:
+          type: integer
+          example: 1
+        serial_number:
+          type: string
+          example: GEN-2026-0041
+        name:
+          type: string
+          nullable: true
+          example: Planta Auxiliar
+        model:
+          type: string
+          example: Cummins 150 kVA Silent Diésel
+        capacity_kva:
+          type: number
+          nullable: true
+          example: 150.0
+        status:
+          $ref: '#/components/schemas/GeneratorStatus'
+        status_label:
+          type: string
+          example: En Almacén
+        status_color:
+          type: string
+          example: violet
+        client_id:
+          type: integer
+          nullable: true
+          example: 2
+        client:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            company_fiscal_name:
+              type: string
+            company_short_name:
+              type: string
+            rif:
+              type: string
+        estimated_arrival_date:
+          type: string
+          format: date
+          nullable: true
+          example: '2026-10-05'
+        photo_path:
+          type: string
+          nullable: true
+        photo_url:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        checkpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Checkpoint'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    GeneratorSummaryResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 5
+        warehouse:
+          type: integer
+          example: 1
+        in_transit:
+          type: integer
+          example: 2
+        checkpoint:
+          type: integer
+          example: 1
+        delivered:
+          type: integer
+          example: 1
+        installed:
+          type: integer
+          example: 0
+
+    StoreGeneratorRequest:
+      type: object
+      required:
+        - serial_number
+        - model
+      properties:
+        serial_number:
+          type: string
+          example: GEN-2026-0041
+        model:
+          type: string
+          example: Cummins 150 kVA Silent Diésel
+        name:
+          type: string
+          nullable: true
+        capacity_kva:
+          type: number
+          nullable: true
+          example: 150
+        status:
+          $ref: '#/components/schemas/GeneratorStatus'
+        client_id:
+          type: integer
+          nullable: true
+          example: 1
+        estimated_arrival_date:
+          type: string
+          format: date
+          nullable: true
+          example: '2026-10-01'
+        photo:
+          type: string
+          format: binary
+          description: Archivo de imagen (JPEG, PNG, WebP)
+        notes:
+          type: string
+          nullable: true
+
+    UpdateGeneratorRequest:
+      type: object
+      properties:
+        serial_number:
+          type: string
+        model:
+          type: string
+        name:
+          type: string
+          nullable: true
+        capacity_kva:
+          type: number
+          nullable: true
+        status:
+          $ref: '#/components/schemas/GeneratorStatus'
+        client_id:
+          type: integer
+          nullable: true
+        estimated_arrival_date:
+          type: string
+          format: date
+          nullable: true
+        photo:
+          type: string
+          format: binary
+        notes:
+          type: string
+          nullable: true
+
+    Checkpoint:
+      type: object
+      required:
+        - id
+        - generator_id
+        - status
+        - status_label
+        - status_color
+        - checkpoint_name
+        - changed_by
+      properties:
+        id:
+          type: integer
+          example: 1
+        generator_id:
+          type: integer
+          example: 1
+        status:
+          $ref: '#/components/schemas/GeneratorStatus'
+        status_label:
+          type: string
+          example: En Tránsito
+        status_color:
+          type: string
+          example: sky
+        checkpoint_name:
+          type: string
+          example: Alcabala Guacara
+        event_date:
+          type: string
+          example: '2026-08-30 07:30'
+        event_date_iso:
+          type: string
+          format: date-time
+          example: '2026-08-30T07:30:00Z'
+        notes:
+          type: string
+          nullable: true
+          example: 'Generador despachado desde warehouse Caracas. Transportista: Express Cargo VE.'
+        user_id:
+          type: integer
+          nullable: true
+          example: 2
+        changed_by:
+          type: string
+          example: Adriana Morales
+        changed_by_role:
+          type: string
+          example: Administrador
+        created_at:
+          type: string
+          format: date-time
+
+    StoreCheckpointRequest:
+      type: object
+      required:
+        - status
+        - checkpoint_name
+      properties:
+        status:
+          $ref: '#/components/schemas/GeneratorStatus'
+        checkpoint_name:
+          type: string
+          maxLength: 150
+          example: Punto de Control Valencia
+        event_date:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-08-30 07:30:00'
+        notes:
+          type: string
+          maxLength: 2000
+          nullable: true
+          example: 'Revisión completada sin novedades.'
