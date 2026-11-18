@@ -61,12 +61,14 @@ El proyecto se desarrolla y entrega bajo una **Metodología de Entregas Progresi
   * Fecha estimada de llegada (ETA).
   * Fotografía referencial del activo (cargador de imágenes con almacenamiento en storage).
   * Capacidad y modelo del generador.
-* **`RN-GEN-02` [Estados del Generador]:**
-  * `warehouse` (En almacén)
-  * `in_transit` (En tránsito)
-  * `checkpoint` (En punto de control)
-  * `delivered` (Entregado en locación)
-  * `installed` (Instalado y operativo)
+* **`RN-GEN-02` [Estados del Generador (7 Etapas Logísticas)]:**
+  * `purchase_order` (Orden de Compra)
+  * `in_production` (En Producción)
+  * `origin_customs` (En Aduana de Origen)
+  * `maritime_transit` (En Tránsito Marítimo)
+  * `destination_customs` (En Aduana Destino)
+  * `baifa_warehouse` (En Almacén BaiFa)
+  * `delivered` (Entregado)
 
 ---
 

@@ -62,12 +62,14 @@ El frontend se desarrolla y entrega bajo una **Metodología de Entregas Progresi
   * Selector de Fecha estimada de llegada (ETA) mediante componente date-picker.
   * Componente de carga y previsualización (preview) de fotografía referencial del generador.
   * Capacidad (kVA) y modelo del generador.
-* **RN-GEN-02 [Indicadores Visuales de Estado (Chips / Badges)]:**
-  * warehouse (En almacén)
-  * in_transit (En tránsito)
-  * checkpoint (En punto de control)
-  * delivered (Entregado en locación)
-  * installed (Instalado y operativo)
+* **RN-GEN-02 [Indicadores Visuales de Estado (Chips / Badges — 7 Etapas)]:**
+  * `purchase_order` (Orden de Compra)
+  * `in_production` (En Producción)
+  * `origin_customs` (En Aduana de Origen)
+  * `maritime_transit` (En Tránsito Marítimo)
+  * `destination_customs` (En Aduana Destino)
+  * `baifa_warehouse` (En Almacén BaiFa)
+  * `delivered` (Entregado)
   Cada estado debe mostrar su respectivo color distintivo e icono acorde a la guía de estilos de Figma.
 
 ---

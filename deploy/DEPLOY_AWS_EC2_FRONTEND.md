@@ -32,10 +32,10 @@ npm run build
 docker login
 
 # 3. Construir la imagen etiquetada con la versión de release
-docker build -t juaneliezer13/baifa-ui:release-1.0.7 -t juaneliezer13/baifa-ui:latest .
+docker build -t juaneliezer13/baifa-ui:release-1.0.8 -t juaneliezer13/baifa-ui:latest .
 
 # 4. Subir la imagen a Docker Hub
-docker push juaneliezer13/baifa-ui:release-1.0.7
+docker push juaneliezer13/baifa-ui:release-1.0.8
 docker push juaneliezer13/baifa-ui:latest
 ```
 
@@ -49,7 +49,7 @@ En el servidor EC2, unificamos los servicios en `~/baifa-base/docker-compose.yml
 ```yaml
 services:
   front:
-    image: juaneliezer13/baifa-ui:release-1.0.7
+    image: juaneliezer13/baifa-ui:release-1.0.8
     container_name: baifa-ui
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ services:
       - .env
 
   api:
-    image: juaneliezer13/baifa-api:release-1.0.7
+    image: juaneliezer13/baifa-api:release-1.0.8
     container_name: baifa-api
     restart: unless-stopped
     ports:

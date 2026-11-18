@@ -88,7 +88,7 @@ CREATE TABLE `checkpoints` (
   KEY `checkpoints_status_index` (`status`),
   CONSTRAINT `checkpoints_generator_id_foreign` FOREIGN KEY (`generator_id`) REFERENCES `generators` (`id`) ON DELETE CASCADE,
   CONSTRAINT `checkpoints_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `checkpoints` (
 
 LOCK TABLES `checkpoints` WRITE;
 /*!40000 ALTER TABLE `checkpoints` DISABLE KEYS */;
-INSERT INTO `checkpoints` VALUES (1,1,3,'warehouse','Almacén Central Caracas','2026-09-27 08:30:00','Inspección técnica de pre-entrega aprobada. Generador preparado para despacho.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(2,1,4,'in_transit','Distribuidor La Encrucijada','2026-09-29 11:45:00','En ruta hacia Valencia con Transporte Los Andes Placa A12BC3D. Chofer: José Parra.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(3,1,4,'in_transit','Peaje Guacara','2026-10-01 16:20:00','Paso de peaje sin novedades mecánicas. Velocidad crucero 60 km/h.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(4,3,3,'warehouse','Almacén Central Caracas','2026-09-25 09:00:00','Carga y trincaje en plataforma de carga pesada.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(5,3,4,'in_transit','Autopista Regional del Centro Km 84','2026-09-28 14:15:00','Tránsito normal con custodia hacia el occidente del país.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(6,3,4,'checkpoint','Punto de Control Alcabala Guacara','2026-10-01 18:30:00','Detenido en Punto de Control Alcabala Guacara para revisión de guía de transporte e inspección de seriales.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(7,4,3,'warehouse','Almacén Central Caracas','2026-09-22 10:00:00','Equipo verificado en banco de prueba con carga resistiva al 100%.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(8,4,4,'in_transit','Troncal 5 Tramo Barinas','2026-09-27 13:00:00','Transporte avanzando hacia los llanos occidentales.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(9,4,4,'delivered','Hacienda Santa Inés (Locación Final)','2026-09-30 16:45:00','Recibido en finca por el encargado de operaciones. Pendiente arranque y conexionado.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(10,5,3,'warehouse','Warehouse Principal Baifa','2026-09-02 09:15:00','Ingreso a inventario y nacionalización de planta 500 kVA.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(11,5,4,'in_transit','Distribuidor San Blas Valencia','2026-09-12 11:30:00','Traslado especial escoltado hasta zona industrial.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(12,5,4,'delivered','Planta Fabril Valencia','2026-09-16 15:00:00','Descarga sobre losa de concreto antivibratoria.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(13,5,4,'installed','Sede Fabril Valencia (Sala de Máquinas)','2026-09-17 17:30:00','Instalado, cableado y probado con transferencia automática 100% operativa.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(14,2,3,'warehouse','Warehouse Principal Baifa Caracas','2026-09-20 10:00:00','En inventario físico en Warehouse Principal Baifa Caracas.','2026-10-02 18:20:59','2026-10-02 18:20:59'),(15,2,1,'checkpoint','Punto de control barquisimeto','2026-10-08 12:05:00','Alcabala barquisimeto','2026-10-08 16:05:19','2026-10-08 16:05:19');
+INSERT INTO `checkpoints` VALUES (2,2,4,'purchase_order','Orden de Compra #OC-2026-109 Confirmada','2026-10-05 09:15:00','Orden aprobada por gerencia comercial BaiFa.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(3,2,5,'in_production','Planta Industrial BaiFa Power Wuxi','2026-10-18 14:30:00','Ensamblaje de motor Cummins y cabina insonorizada completado. Pruebas de carga al 100%.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(4,2,5,'origin_customs','Terminal Aduanera Puerto de Shanghai','2026-11-01 11:00:00','Declaración de exportación y precinto aduanero verificados sin novedades.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(5,2,6,'maritime_transit','Embarque Buque CMA CGM Volga (Ruta Atlántico)','2026-11-12 07:45:00','Zarpe confirmado con destino a Puerto Cabello. B/L #SHAPCAB8841.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(6,3,4,'purchase_order','Orden de Compra #OC-2026-088','2026-09-10 10:00:00','Pedido formalizado para respaldo de centro de datos.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(7,3,5,'in_production','Línea de Ensamblaje BaiFa Wuxi','2026-09-25 16:20:00','Pruebas FAT aprobadas satisfactoriamente.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(8,3,5,'origin_customs','Aduana Portuaria Ningbo','2026-10-05 08:50:00','Despacho de exportación liberado.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(9,3,6,'maritime_transit','Tránsito Marítimo Buque MSC Sofia','2026-10-14 13:10:00','Travesía oceánica completada sin incidencias.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(10,3,6,'destination_customs','SENIAT Aduana Principal Puerto Cabello','2026-11-08 11:30:00','Nacionalización y pago de aranceles finiquitados.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(11,3,5,'baifa_warehouse','Almacén Central BaiFa Valencia - Zona Industrial','2026-11-15 15:40:00','Inspección pre-entrega (PDI), niveles de fluidos y batería verificados.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(12,4,1,'purchase_order','Orden de Compra #OC-2026-054','2026-08-15 09:00:00','Aprobación técnica de generador de 500 kVA.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(13,4,5,'in_production','Fábrica Principal BaiFa Power','2026-09-01 12:00:00','Producción y banco de pruebas finalizados.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(14,4,5,'origin_customs','Aduana de Exportación Shanghai','2026-09-12 15:00:00','Documentación de exportación sellada.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(15,4,6,'maritime_transit','Buque Maersk Salalah','2026-09-20 06:30:00','En navegación hacia costa venezolana.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(16,4,6,'destination_customs','Aduana Marítima Puerto Cabello','2026-10-25 10:15:00','Reconocimiento aduanero aprobado y pase de salida emitido.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(17,4,5,'baifa_warehouse','Almacén Central BaiFa Valencia','2026-11-02 14:00:00','Revisión electromecánica completa antes del despacho final.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(18,4,4,'delivered','Planta Industrial Cliente - Zona Industrial Carabobo','2026-11-10 11:20:00','Descarga con grúa telescópica y entrega formal con acta de recepción #ENT-2026-043.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(19,5,4,'purchase_order','Orden de Compra #OC-2026-112','2026-09-28 11:00:00','Orden registrada para proyecto vial en Mérida.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(20,5,5,'in_production','Planta de Producción BaiFa','2026-10-10 17:00:00','Unidad ensamblada con motor Perkins.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(21,5,5,'origin_customs','Aduana de Origen Shanghai','2026-10-19 09:30:00','Inspección de exportación aprobada.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(22,5,6,'maritime_transit','Tránsito Marítimo Buque Cosco Faith','2026-10-24 08:00:00','Salida de puerto origen.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(23,5,6,'destination_customs','Aduana Principal Puerto Cabello - Patio 4','2026-11-16 10:45:00','Descarga de buque completada, agente aduanal gestionando liquidación.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(24,6,4,'purchase_order','Orden de Compra #OC-2026-130','2026-10-22 10:15:00','Orden confirmada para planta de silos en Portuguesa.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(25,6,5,'in_production','Planta Industrial BaiFa Wuxi','2026-11-05 15:00:00','Fabricación y pintura epóxica anticorrosiva terminadas.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(26,6,5,'origin_customs','Aduana Portuaria Shanghai - Terminal Yangshan','2026-11-17 09:20:00','Ingreso a zona primaria aduanera para despacho marítimo.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(27,7,4,'purchase_order','Orden de Compra #OC-2026-145','2026-11-04 14:10:00','Orden procesada y enviada a fábrica.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(28,7,5,'in_production','Línea 3 de Ensamblaje BaiFa Power','2026-11-16 11:00:00','Montaje de motor y módulo de control digital DSE7320.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(29,8,1,'purchase_order','Orden de Compra #OC-2026-158 Emitida','2026-11-18 08:30:00','Apertura de expediente logístico y confirmación de especificaciones técnicas.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(30,9,4,'purchase_order','Orden de Compra #OC-2026-041','2026-08-02 10:00:00','Solicitud aprobada.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(31,9,5,'in_production','Planta BaiFa Wuxi','2026-08-20 16:00:00','Fabricación completada.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(32,9,5,'origin_customs','Aduana Shanghai','2026-09-02 09:00:00','Exportación autorizada.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(33,9,6,'maritime_transit','Tránsito Marítimo Internacional','2026-09-10 12:00:00','Buque en ruta.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(34,9,6,'destination_customs','Aduana Puerto Cabello','2026-10-18 14:30:00','Nacionalizado.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(35,9,5,'baifa_warehouse','Almacén BaiFa Valencia','2026-10-25 11:00:00','Alistamiento completado.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(36,9,6,'delivered','Sede Cliente Maracay - Zona Industrial San Vicente','2026-11-05 15:15:00','Entrega final completada sin observaciones.','2026-11-18 19:53:29','2026-11-18 19:53:29'),(37,10,1,'in_production','Línea de Ensamblaje BaiFa Wuxi','2026-11-18 19:55:51','Ingreso a línea de producción verificado','2026-11-18 19:55:51','2026-11-18 19:55:51');
 /*!40000 ALTER TABLE `checkpoints` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +135,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (1,'Empresa Cliente Real S.A.','Cliente Real','J-11223344-5','0212-999-0000','Cliente Real Demo','cliente.real@empresa.com','0414-999-0001',1,5,'2026-09-27 23:50:42','2026-09-27 23:50:42',NULL),(2,'Industrias Venezolanas Toro S.A.','IndVen Toro','J-12345678-9','0212-555-0100','Carlos Mendoza','cmendoza@indventoro.com.ve','0414-555-0101',1,6,'2026-09-27 23:50:42','2026-09-27 23:50:42',NULL),(3,'Constructora Andina C.A.','ConstAndina','J-98765432-1','0261-444-0200','María González','mgonzalez@constructoraandina.com','0424-555-0201',1,7,'2026-09-27 23:50:43','2026-09-27 23:50:43',NULL),(4,'Agropecuaria Los Llanos S.R.L.','AgroLlanos','J-45678901-2','0243-333-0300','Roberto Díaz','rdiaz@agrollanos.com.ve','0416-555-0301',1,8,'2026-09-27 23:50:43','2026-09-27 23:50:43',NULL),(5,'Distribuidora Nacional de Alimentos C.A.','DiNaCa','J-31416926-7','0212-777-0400','Ana Torres','atorres@dinaca.com.ve','0412-555-0401',0,9,'2026-09-27 23:50:43','2026-09-27 23:50:43',NULL);
+INSERT INTO `clients` VALUES (1,'Inversiones Energía Total C.A.','Energía Total','J-41234567-8','0212-9514420','Carlos Mendoza','cliente@baifa.com.ve','0414-3218890',1,2,'2026-11-18 00:09:07','2026-11-18 19:53:29',NULL),(2,'Volkswagen de Venezuela S.A.','VW Venezuela','J-30145892-3','0241-8324500','Juan Eliezer Chirinos','juaneliezer13@gmail.com','0412-4559812',1,3,'2026-11-18 18:45:31','2026-11-18 19:53:29',NULL),(3,'Constructora Andina de Infraestructura C.A.','ConstAndina','J-30891234-5','0274-2631180','Roberto Silva','logistica@constandina.com.ve','0414-7412233',1,7,'2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(4,'Agroindustrial Los Llanos S.A.','AgroLlanos','J-29765432-1','0255-6218840','Elena Betancourt','compras@agrollanos.com.ve','0424-5123344',1,8,'2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(5,'Frigoríficos Centrales de Carabobo C.A.','FrigoCarabobo','J-40551122-9','0241-8715500','Miguel Ángel Pérez','mperez@frigocarabobo.com.ve','0414-4809911',0,NULL,'2026-11-18 19:53:29','2026-11-18 19:53:29',NULL);
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,7 +183,7 @@ CREATE TABLE `generators` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `model` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `capacity_kva` decimal(8,2) DEFAULT NULL,
-  `status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'warehouse',
+  `status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'purchase_order',
   `estimated_arrival_date` date DEFAULT NULL,
   `photo_path` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `notes` text COLLATE utf8mb4_unicode_ci,
@@ -194,7 +194,7 @@ CREATE TABLE `generators` (
   UNIQUE KEY `generators_serial_number_unique` (`serial_number`),
   KEY `generators_client_id_foreign` (`client_id`),
   CONSTRAINT `generators_client_id_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +203,7 @@ CREATE TABLE `generators` (
 
 LOCK TABLES `generators` WRITE;
 /*!40000 ALTER TABLE `generators` DISABLE KEYS */;
-INSERT INTO `generators` VALUES (1,'GEN-2026-0041',2,'Generador Principal Planta Valencia','Cummins 150 kVA Silent Diésel',150.00,'in_transit','2026-10-05',NULL,'Despachado desde almacén central. Transporte Transporte Los Andes Placa A12BC3D.','2026-09-27 23:50:43','2026-10-02 00:05:15',NULL),(2,'GEN-2026-0038',NULL,'Generador Auxiliar Stock','Perkins 60 kVA Insonorizado',60.00,'checkpoint',NULL,NULL,'Alcabala barquisimeto','2026-09-27 23:50:44','2026-10-08 16:05:19',NULL),(3,'GEN-2026-0029',3,'Generador Obra Maracaibo','Baudouin 250 kVA Diésel Abierto',250.00,'checkpoint','2026-10-03',NULL,'Detenido en Punto de Control Alcabala Guacara para revisión de guía de transporte.','2026-09-27 23:50:44','2026-10-02 00:05:15',NULL),(4,'GEN-2026-0015',4,'Generador Hacienda Santa Inés','Weichai 100 kVA Silent',100.00,'delivered','2026-09-30',NULL,'Recibido en finca por el encargado de operaciones. Pendiente arranque y conexionado.','2026-09-27 23:50:44','2026-10-02 00:05:16',NULL),(5,'GEN-2026-0008',2,'Generador Respaldo Sede Fabril','Cummins 500 kVA Power Heavy',500.00,'installed','2026-09-17',NULL,'Instalado, cableado y probado con transferencia automática 100% operativa.','2026-09-27 23:50:44','2026-10-02 00:05:16',NULL),(6,'GEN-2026-0099',NULL,NULL,'Yanmar 45 kVA Silent Ultra',45.00,'warehouse',NULL,NULL,'Generador ingresado para prueba de integración Etapa 2','2026-09-27 23:54:19','2026-09-27 23:54:25','2026-09-27 23:54:25'),(7,'GEN-234-432',1,NULL,'432423',1200.00,'warehouse','2026-10-02','0','test','2026-10-02 17:39:20','2026-10-02 17:39:20',NULL);
+INSERT INTO `generators` VALUES (2,'GEN-2026-0041',1,'Planta Principal Sede Caracas','BaiFa BF-C170S Cummins Silent',170.00,'maritime_transit','2026-12-10',NULL,'Buque CMA CGM Volga - Contenedor #CMAU449201. En ruta hacia Puerto Cabello.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(3,'GEN-2026-0042',1,'Respaldo Centro de Datos','BaiFa BF-C275S Cummins Industrial',275.00,'baifa_warehouse','2026-11-22',NULL,'Equipo verificado en Almacén Central BaiFa Valencia, listo para programación de entrega.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(4,'GEN-2026-0043',2,'Planta Ensambladora Valencia','BaiFa BF-C500S Cummins Heavy Duty',500.00,'delivered','2026-11-10',NULL,'Entregado con acta de conformidad firmada en planta del cliente.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(5,'GEN-2026-0044',3,'Generador Campamento Vial Mérida','BaiFa BF-P110 Perkins Soundproof',110.00,'destination_customs','2026-11-28',NULL,'En proceso de desaduanamiento en Bolipuertos Puerto Cabello.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(6,'GEN-2026-0045',4,'Planta Silos Acarigua','BaiFa BF-C330S Cummins Agro',330.00,'origin_customs','2026-12-22',NULL,'En patio aduanero de origen esperando asignación de buque.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(7,'GEN-2026-0046',3,'Unidad Auxiliar Obra Táchira','BaiFa BF-C80S Cummins Compact',80.00,'in_production','2027-01-12',NULL,'En ensamblaje de alternador Stamford y tablero DeepSea.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(8,'GEN-2026-0047',4,'Respaldo Frigorífico Barinas','BaiFa BF-V400 Volvo Penta',400.00,'purchase_order','2027-01-25',NULL,'Orden de compra recién emitida y asignada a lote de producción diciembre.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(9,'GEN-2026-0048',1,'Planta Sucursal Maracay','BaiFa BF-C200S Cummins Silent',200.00,'delivered','2026-11-05',NULL,'Entregado y recibido conforme en sucursal Maracay.','2026-11-18 19:53:29','2026-11-18 19:53:29',NULL),(10,'GEN-2026-0049',NULL,NULL,'BaiFa BF-C150S Cummins Silent',150.00,'in_production',NULL,NULL,'Ingreso a línea de producción verificado','2026-11-18 19:55:32','2026-11-18 19:55:51',NULL);
 /*!40000 ALTER TABLE `generators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +288,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1),(2,'0001_01_01_000001_create_cache_table',1),(3,'0001_01_01_000002_create_jobs_table',1),(4,'2026_09_09_141555_create_personal_access_tokens_table',1),(5,'2026_09_09_142410_add_role_to_users_table',1),(6,'2026_09_10_000001_add_is_active_to_users_table',1),(7,'2026_09_10_130000_create_clients_table',1),(8,'2026_09_27_160000_create_generators_table',1),(9,'2026_10_02_140000_create_checkpoints_table',2),(10,'2026_10_07_180000_create_support_tickets_table',3),(11,'2026_10_07_180100_create_ticket_messages_table',3),(12,'2026_10_07_180200_create_ticket_logs_table',3);
+INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1),(2,'0001_01_01_000001_create_cache_table',1),(3,'0001_01_01_000002_create_jobs_table',1),(4,'2026_09_09_141555_create_personal_access_tokens_table',1),(5,'2026_09_09_142410_add_role_to_users_table',1),(6,'2026_09_10_000001_add_is_active_to_users_table',1),(7,'2026_09_10_130000_create_clients_table',1),(8,'2026_09_27_160000_create_generators_table',1),(9,'2026_10_02_140000_create_checkpoints_table',1),(10,'2026_11_18_150000_update_generator_statuses_to_seven_stages',2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -338,7 +338,7 @@ CREATE TABLE `personal_access_tokens` (
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`),
   KEY `personal_access_tokens_expires_at_index` (`expires_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,7 +347,7 @@ CREATE TABLE `personal_access_tokens` (
 
 LOCK TABLES `personal_access_tokens` WRITE;
 /*!40000 ALTER TABLE `personal_access_tokens` DISABLE KEYS */;
-INSERT INTO `personal_access_tokens` VALUES (1,'App\\Models\\User',1,'auth_token','c082085d1a29fbce9a34b776a1aa58c02b952baa13b5d9174ef5282e900d6ca8','[\"*\"]',NULL,NULL,'2026-09-27 23:51:14','2026-09-27 23:51:14'),(2,'App\\Models\\User',1,'auth_token','e6d29403d6b120920098ca7f2fc1b02b0e72f2132a5b843277c4f2eca76e0a79','[\"*\"]',NULL,NULL,'2026-09-27 23:51:30','2026-09-27 23:51:30'),(3,'App\\Models\\User',1,'auth_token','435d62e82f15afae3329775e1a1fe2e4108845212b99fbe63c883c8873369eff','[\"*\"]','2026-09-27 23:54:25',NULL,'2026-09-27 23:53:55','2026-09-27 23:54:25'),(4,'App\\Models\\User',1,'auth_token','c2d696278c763b299da8a3e474a2739b820c536de90356cb4df4014164de65c7','[\"*\"]',NULL,NULL,'2026-10-02 00:06:03','2026-10-02 00:06:03'),(5,'App\\Models\\User',1,'auth_token','73b5c1e91960c7324d6115fd90fbdd7ff0c63a022758e288ab9a897248ceba55','[\"*\"]',NULL,NULL,'2026-10-02 00:07:23','2026-10-02 00:07:23'),(6,'App\\Models\\User',1,'auth_token','701052d9a3f9b28898f715e3c1c46aaae4c87fbcd64ed032a66e3fa59193c3d7','[\"*\"]','2026-10-02 00:07:36',NULL,'2026-10-02 00:07:32','2026-10-02 00:07:36'),(8,'App\\Models\\User',5,'web','cd6ab5232c8381ee1577dd3503147c155dd2447e115a4e0df54311dc7af02280','[\"*\"]','2026-10-02 17:43:02',NULL,'2026-10-02 17:40:42','2026-10-02 17:43:02'),(9,'App\\Models\\User',1,'web','be492c42cd626eb53a1e90cdce3c46abbf91e6c2b812e954a3356af628f509e0','[\"*\"]','2026-10-02 18:16:01',NULL,'2026-10-02 18:15:58','2026-10-02 18:16:01'),(10,'App\\Models\\User',1,'auth_token','9edf410713c17e8059e742ee321c2f6ad9597e288602eeb5fd66dd9448e52512','[\"*\"]','2026-10-02 18:21:43',NULL,'2026-10-02 18:21:34','2026-10-02 18:21:43'),(16,'App\\Models\\User',1,'web','faa3a826e4c518c1ad48d6e87a6d9fb3f28077fc01f9ba9a790a17c80174437f','[\"*\"]','2026-10-08 00:25:18',NULL,'2026-10-07 23:50:43','2026-10-08 00:25:18'),(18,'App\\Models\\User',1,'web','d19cced083539f06683f86ffa27c7329204c16a0db572ca26733c5954aeeb681','[\"*\"]','2026-10-08 16:00:08',NULL,'2026-10-08 15:59:28','2026-10-08 16:00:08'),(19,'App\\Models\\User',1,'web','5caf0d022af87b94a27b22974cda768f64aa2ecd753c1757fcfb31b94aebd89b','[\"*\"]','2026-10-08 17:54:20',NULL,'2026-10-08 16:04:04','2026-10-08 17:54:20');
+INSERT INTO `personal_access_tokens` VALUES (3,'App\\Models\\User',1,'web','33359011837b1d4703a8c76e5850f8569c3284a271200ddf74c230308356552a','[\"*\"]','2026-11-18 18:47:33',NULL,'2026-11-18 18:33:44','2026-11-18 18:47:33'),(5,'App\\Models\\User',2,'web','809b9282d64a06ddedba462c71df4ce17a322e7cee3ec81f2e5edc6e6057c74c','[\"*\"]','2026-11-18 19:56:57',NULL,'2026-11-18 19:56:57','2026-11-18 19:56:57'),(8,'App\\Models\\User',1,'web','2fa73e6472f3625cc6ffb62b8038eb8bc7c5ad2bd288aabf423d4b5440b34127','[\"*\"]','2026-11-18 20:24:17',NULL,'2026-11-18 20:20:23','2026-11-18 20:24:17');
 /*!40000 ALTER TABLE `personal_access_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -381,117 +381,6 @@ LOCK TABLES `sessions` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `support_tickets`
---
-
-DROP TABLE IF EXISTS `support_tickets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `support_tickets` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint unsigned NOT NULL,
-  `client_id` bigint unsigned DEFAULT NULL,
-  `assigned_to_user_id` bigint unsigned DEFAULT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'soporte_tecnico',
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
-  `final_comment` text COLLATE utf8mb4_unicode_ci,
-  `closed_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `support_tickets_code_unique` (`code`),
-  KEY `support_tickets_client_id_foreign` (`client_id`),
-  KEY `support_tickets_status_category_index` (`status`,`category`),
-  KEY `support_tickets_user_id_status_index` (`user_id`,`status`),
-  KEY `support_tickets_assigned_to_user_id_status_index` (`assigned_to_user_id`,`status`),
-  CONSTRAINT `support_tickets_assigned_to_user_id_foreign` FOREIGN KEY (`assigned_to_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `support_tickets_client_id_foreign` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `support_tickets_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `support_tickets`
---
-
-LOCK TABLES `support_tickets` WRITE;
-/*!40000 ALTER TABLE `support_tickets` DISABLE KEYS */;
-INSERT INTO `support_tickets` VALUES (1,'TKT-2026-0001',5,1,NULL,'falla en arranque de generador','logistica','test','pending',NULL,NULL,'2026-10-07 23:48:06','2026-10-07 23:49:36');
-/*!40000 ALTER TABLE `support_tickets` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ticket_logs`
---
-
-DROP TABLE IF EXISTS `ticket_logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ticket_logs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ticket_id` bigint unsigned NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `action` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `previous_status` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `new_status` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
-  `metadata` json DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `ticket_logs_user_id_foreign` (`user_id`),
-  KEY `ticket_logs_ticket_id_created_at_index` (`ticket_id`,`created_at`),
-  CONSTRAINT `ticket_logs_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `support_tickets` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `ticket_logs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ticket_logs`
---
-
-LOCK TABLES `ticket_logs` WRITE;
-/*!40000 ALTER TABLE `ticket_logs` DISABLE KEYS */;
-INSERT INTO `ticket_logs` VALUES (1,1,5,'ticket_created',NULL,'pending','Ticket de soporte generado por el cliente.',NULL,'2026-10-07 23:48:06');
-/*!40000 ALTER TABLE `ticket_logs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ticket_messages`
---
-
-DROP TABLE IF EXISTS `ticket_messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ticket_messages` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ticket_id` bigint unsigned NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `sender_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'client',
-  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ticket_messages_user_id_foreign` (`user_id`),
-  KEY `ticket_messages_ticket_id_created_at_index` (`ticket_id`,`created_at`),
-  CONSTRAINT `ticket_messages_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `support_tickets` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `ticket_messages_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ticket_messages`
---
-
-LOCK TABLES `ticket_messages` WRITE;
-/*!40000 ALTER TABLE `ticket_messages` DISABLE KEYS */;
-INSERT INTO `ticket_messages` VALUES (1,1,NULL,'system','Ticket #TKT-2026-0001 creado con éxito: \"falla en arranque de generador\". En cola del Helpdesk a la espera de asignación de operador.','2026-10-07 23:48:06','2026-10-07 23:48:06'),(2,1,5,'client','test','2026-10-07 23:48:06','2026-10-07 23:48:06'),(3,1,5,'client','por favor necesito soporte','2026-10-07 23:49:36','2026-10-07 23:49:36');
-/*!40000 ALTER TABLE `ticket_messages` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users`
 --
 
@@ -513,7 +402,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_email_unique` (`email`),
   KEY `users_role_index` (`role`),
   KEY `users_is_active_index` (`is_active`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -522,9 +411,13 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Adriana Morales','admin@baifa.com.ve','admin',1,NULL,'$2y$12$cA73MiyizDLdetNpUIPsw.4wlmHFp8MkufbWQTecFHvWWGvo3l7ta',NULL,'2026-09-27 23:50:40','2026-09-27 23:50:40'),(2,'Admin Baifa','admin@admin','admin',1,NULL,'$2y$12$0i24n/NkaPvgecL3Jkt7Pe5zugsWH.B2NbIk73m0RRIXTMvPRGCQq',NULL,'2026-09-27 23:50:41','2026-09-27 23:50:41'),(3,'Fernando Soto','gerente@baifa.com.ve','manager',1,NULL,'$2y$12$pSFXScUxEC.7Az6GltcFueMKuMmzPH8vFNtJt36G7wMe0yq4G.Dpu',NULL,'2026-09-27 23:50:41','2026-09-27 23:50:41'),(4,'Luis Ramírez','operador@baifa.com.ve','employee',1,NULL,'$2y$12$CQSK7EFHFnBuLiy/5qYzfeKEyc1etreMxXPXsId1bZqs0rSzmKjgG',NULL,'2026-09-27 23:50:41','2026-09-27 23:50:41'),(5,'Cliente Real Demo','cliente.real@empresa.com','client',1,NULL,'$2y$12$wtyXqWqLKQk2TK/BIFV8DOQkW80yH4ion9oTWZJ/ngCkLqu84dViu',NULL,'2026-09-27 23:50:42','2026-09-27 23:50:42'),(6,'Carlos Mendoza','cmendoza@indventoro.com.ve','client',1,NULL,'$2y$12$w0s8kgo05fKqkdMOyhmhrOZx9i1iy.42VrcIA4cLWzzHbbPQPRCTm',NULL,'2026-09-27 23:50:42','2026-09-27 23:50:42'),(7,'María González','mgonzalez@constructoraandina.com','client',1,NULL,'$2y$12$qYcMP5TWTvpyiM1D7TTh3OVg/AzHGqSEpl9AnVwIm255TXp6LgtHm',NULL,'2026-09-27 23:50:43','2026-09-27 23:50:43'),(8,'Roberto Díaz','rdiaz@agrollanos.com.ve','client',1,NULL,'$2y$12$49hf1jKF9FC7rgWZJAXaJOa1avN7vUnu.AH/RplizFmyWSa01qMv6',NULL,'2026-09-27 23:50:43','2026-09-27 23:50:43'),(9,'Ana Torres','atorres@dinaca.com.ve','client',0,NULL,'$2y$12$AQTMkauu5rR9LP3awejc6.zg2AdWlpkvNsCkOBwH/BiQWGoFWqxnG',NULL,'2026-09-27 23:50:43','2026-09-27 23:50:43');
+INSERT INTO `users` VALUES (1,'Administrador General BaiFa','admin@baifa.com.ve','admin',1,NULL,'$2y$12$kRWVbJPb9wcWS5/MAq6HL.rwRdqqlTuxc/xx4ReofDTg4Bmd009qS',NULL,'2026-11-16 19:48:37','2026-11-18 19:53:27'),(2,'Carlos Mendoza','cliente@baifa.com.ve','client',1,NULL,'$2y$12$DGzX/ngMLIonZ2AIiFGFVuG9XgT.vFipf4OHysZuNWKeThY9MhehG',NULL,'2026-11-18 00:09:07','2026-11-18 19:53:28'),(3,'juanperez','juaneliezer13@gmail.com','client',1,NULL,'$2y$12$QBlvEg/Bw6yl2zKMLP.wKuB6rtlYt3edizKKaT4LQPNIGNx9856Jm',NULL,'2026-11-18 18:45:31','2026-11-18 18:45:31'),(4,'Adriana Morales','gerencia@baifa.com.ve','manager',1,NULL,'$2y$12$nZgLJPHd8Ep6rqHwhdmeh.eN72pVK3/JDwhYNlPirKxbcxQ29675i',NULL,'2026-11-18 19:53:27','2026-11-18 19:53:27'),(5,'Luis Alberto Herrera','operaciones@baifa.com.ve','employee',1,NULL,'$2y$12$8ndKoTdBfyn9IMimnQSjC.AA2CGmJsBrYhRqISlbrxWkQ.1PjaGYm',NULL,'2026-11-18 19:53:28','2026-11-18 20:20:06'),(6,'Patricia Rojas','despacho@baifa.com.ve','employee',1,NULL,'$2y$12$zJ0cVM6EuW3epr.kOx3Xs.Ddqi22KCziulSXk2N9SYByTEUOc2fGW',NULL,'2026-11-18 19:53:28','2026-11-18 19:53:28'),(7,'Roberto Silva','logistica@constandina.com.ve','client',1,NULL,'$2y$12$YgkJcoNVL0ivnDNmC0qrE.TIyejWxWIl9k9ZBen9Mmp.xoEpd9LU.',NULL,'2026-11-18 19:53:28','2026-11-18 19:53:28'),(8,'Elena Betancourt','compras@agrollanos.com.ve','client',1,NULL,'$2y$12$M.woBd1iLiGp7UaFyBW5WuRNXlYVW6iywkhB5Z.hZXt2s2F9DKgxm',NULL,'2026-11-18 19:53:29','2026-11-18 19:53:29');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'baifa_api'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -535,4 +428,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-07 15:21:24
+-- Dump completed on 2026-11-18 20:29:27

@@ -22,7 +22,7 @@ Desde la raíz del proyecto `baifa-api`:
 
 ```bash
 # Compilar la imagen de producción usando el Dockerfile multietapa
-docker build -t juaneliezer13/baifa-api:release-1.0.7 -t juaneliezer13/baifa-api:latest .
+docker build -t juaneliezer13/baifa-api:release-1.0.8 -t juaneliezer13/baifa-api:latest .
 ```
 
 *Nota: La imagen compila Nginx + PHP 8.4-FPM + Supervisor en un único contenedor auto-contenido listo para producción.*
@@ -36,7 +36,7 @@ docker build -t juaneliezer13/baifa-api:release-1.0.7 -t juaneliezer13/baifa-api
 docker login
 
 # Subir la imagen
-docker push juaneliezer13/baifa-api:release-1.0.7
+docker push juaneliezer13/baifa-api:release-1.0.8
 docker push juaneliezer13/baifa-api:latest
 ```
 
