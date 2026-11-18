@@ -51,7 +51,11 @@ baifa-docs/
 │   ├── INFORME_PROYECTO_ETAPA_1.pdf              # Informe ejecutivo oficial en PDF de Etapa 1
 │   ├── INFORME_USUARIO_VERSION_1.0.2.md          # Manual e informe de usuario versión 1.0.2
 │   ├── INFORME_USUARIO_VERSION_1.0.2.pdf         # Informe de usuario versión 1.0.2 en PDF
-│   └── INFORME_ENTREGA_ETAPAS_1_A_4_BAIFA.pdf    # Informe consolidado de entrega Etapas 1 a 4
+│   ├── INFORME_ENTREGA_ETAPAS_1_A_4_BAIFA.pdf    # Informe consolidado de entrega Etapas 1 a 4
+│   ├── INFORME_ENTREGA_FINAL_ETAPA_5_v1.0.8.md   # Informe ejecutivo de entrega final Etapa 5 y v1.0.8
+│   ├── INFORME_ENTREGA_FINAL_ETAPA_5_v1.0.8.pdf  # Informe ejecutivo de entrega final Etapa 5 y v1.0.8 en PDF
+│   ├── INFORME_MEJORAS_Y_EVOLUCION_BAIFA.md      # Propuesta concisa de mejoras y nuevas funcionalidades
+│   └── INFORME_MEJORAS_Y_EVOLUCION_BAIFA.pdf     # Propuesta concisa de mejoras y nuevas funcionalidades en PDF
 │
 └── 🖼️ prototypes-and-screenshots/                # Acervo visual de capturas, prototipos y diseño Figma
     ├── 01_dashboard.png hasta 44_*.png           # Capturas paso a paso de cada vista, flujo y modal
