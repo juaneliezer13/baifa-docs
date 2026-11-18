@@ -1,6 +1,6 @@
 # 🚀 Release Notes — `v1.0.6` (Estandarización de Puertos Locales, Limpieza de Proyecto y Workspace)
 
-* **Rama Git / Tag:** `release/v1.0.6` / `v1.0.6`
+* **Rama Git / Tag GitHub:** `release/v1.0.6`
 * **Imagen Docker:** `release-1.0.6`
 
 ## ✨ Novedades Principales

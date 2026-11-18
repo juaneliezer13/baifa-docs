@@ -1,32 +1,60 @@
 # 📜 NORMAS TÉCNICAS, REGLAS DE NEGOCIO Y CONTEXTO PARA IA — BAIFA POWER TRACKING
 
-Este documento reúne las directrices técnicas, arquitectónicas y de negocio obligatorias para el mantenimiento, evolución e iteración de la plataforma **BaiFa Power Tracking**. Tanto los desarrolladores como los agentes y modelos de Inteligencia Artificial deben seguir estrictamente estas normas.
+Este documento reúne las directrices técnicas, arquitectónicas y de negocio **obligatorias** para el mantenimiento, evolución e iteración de la plataforma **BaiFa Power Tracking**. Tanto los desarrolladores como los agentes y modelos de Inteligencia Artificial deben seguir estrictamente estas normas en **todas las tareas**.
 
 ---
 
-## 1. 🏗️ Arquitectura Actual del Ecosistema (`release/v1.0.5`)
+## 1. 🏗️ Arquitectura Actual del Ecosistema (`release/v1.0.7`)
 
-El workspace de **BaiFa Power Tracking** (`baifa/`) está compuesto por tres módulos principales y su configuración de entorno:
+El workspace de **BaiFa Power Tracking** (`baifa/`) está compuesto por tres repositorios independientes y su configuración de entorno:
 
-| Componente | Ruta en Workspace | Tecnología / Propósito | Puerto Host Local |
-| :--- | :--- | :--- | :---: |
-| **Backend REST API** | `baifa-api/` | Laravel 12 + PHP 8.4-FPM + Nginx Alpine + Laravel Sanctum | `14001` |
-| **Base de Datos** | `baifa-api/` (`db`) | MySQL 8.0 (`baifa_api_db`, volumen persistente `baifa_api_dbdata`) | `14002` |
-| **Frontend Web App** | `baifa-ui/` | Nuxt 4 + Vue 3 (`<script setup lang="ts">`) + Vuetify 3 + Tailwind CSS | `15001` |
-| **Documentación y Activos** | `baifa-docs/` | Especificación OpenAPI 3.1, reglas de negocio, guías DevOps, informes y releases | N/A |
+| Componente / Repositorio | Ruta en Workspace | Remoto GitHub | Tecnología / Propósito | Puerto Host Local |
+| :--- | :--- | :--- | :--- | :---: |
+| **Backend REST API** | `baifa-api/` | `git@github.com:juaneliezer13/baifa-api.git` | Laravel 12 + PHP 8.4-FPM + Nginx Alpine + Laravel Sanctum | `14001` |
+| **Base de Datos** | `baifa-api/` (`db`) | *(Servicio Docker)* | MySQL 8.0 (`baifa_api_db`, volumen persistente `baifa_api_dbdata`) | `14002` |
+| **Frontend Web App** | `baifa-ui/` | `git@github.com:juaneliezer13/baifa-ui.git` | Nuxt 4 + Vue 3 (`<script setup lang="ts">`) + Vuetify 3 + Tailwind CSS | `15001` |
+| **Documentación y Activos** | `baifa-docs/` | `git@github.com:juaneliezer13/baifa-docs.git` | Especificación OpenAPI 3.1, reglas de negocio, guías DevOps, informes y releases | N/A |
 
 ### Reglas de Infraestructura y Contenedores
-1. **Puertos Locales Oficiales:**
+1. **Puertos Locales Oficiales (Inamovibles):**
    * **Backend API (`baifa-api`):** Puerto **`14001`** (`http://localhost:14001/api`).
-   * **Frontend Web (`baifa-ui`):** Puerto **`15001`** (`http://localhost:15001`).
    * **Base de Datos MySQL (`baifa_api_db`):** Puerto **`14002`** en el host (`3306` interno en la red Docker `baifa_network`).
-2. **Ejecución 100% Contenerizada:**
+   * **Frontend Web (`baifa-ui`):** Puerto **`15001`** (`http://localhost:15001`).
+2. **Ejecución 100% Contenerizada y Manual:**
    * Todos los comandos de PHP, Composer, Artisan y MySQL se ejecutan dentro del contenedor del backend: `docker compose exec app <comando>`.
-   * No ejecutar pruebas (`php artisan test`) ni formateadores (`./vendor/bin/pint`, `eslint`) de forma automática salvo solicitud explícita del usuario.
+   * **PROHIBIDO** ejecutar pruebas (`php artisan test`, `npm test`) ni formateadores/linters (`./vendor/bin/pint`, `eslint`) de forma automática salvo solicitud explícita del usuario.
 
 ---
 
-## 2. 👥 Roles de Usuario (RBAC) y Control de Acceso
+## 2. 🏷️ Estándar Obligatorio de Versionado, Ramas y Tags (GitHub vs Docker Hub)
+
+1. **GitHub (`baifa-api`, `baifa-ui` y `baifa-docs`):**
+   * **Ramas de Release:** `release/vX.Y.Z` (ej. `release/v1.0.7`).
+   * **Tags de Git/GitHub:** `release/vX.Y.Z` (ej. `release/v1.0.7` -> `https://github.com/juaneliezer13/baifa-api/releases/tag/release%2Fv1.0.7`).
+   * ❌ **PROHIBIDO** crear tags sueltos con formato `vX.Y.Z` sin el prefijo `release/`.
+   * 💡 **Nota Técnica de Git:** Como la rama y el tag comparten el nombre `release/vX.Y.Z`, siempre deben emplearse referencias completas (`refs/heads/release/vX.Y.Z` y `refs/tags/release/vX.Y.Z`) al crear tags, mover ramas (`main`, `develop`) o hacer `git push`.
+2. **Docker Hub (Imágenes de Contenedores):**
+   * **Tags de Imagen Docker:** `release-X.Y.Z` (ej. `juaneliezer13/baifa-api:release-1.0.7` y `juaneliezer13/baifa-ui:release-1.0.7`).
+
+---
+
+## 3. 🛡️ Reglas de Producción: Cero Data Dummy y Validaciones de Formularios
+
+1. **Cero Data Dummy en Código de Producción:**
+   * Prohibido incluir botones de acceso rápido de demostración, credenciales quemadas en vistas, mocks de fallback o contadores estáticos ficticios.
+   * `DatabaseSeeder.php` únicamente aprovisiona la cuenta inicial del Superadministrador (`admin@baifa.com.ve`). Cualquier credencial de prueba local debe anotarse fuera del repositorio.
+2. **Validación y Auto-Formateo Obligatorio en Todos los Formularios:**
+   * **Frontend (`baifa-ui/app/utils/validators.ts`):** Todo formulario o modal debe validar y auto-formatear en tiempo real:
+     * **RIF Venezolano (`formatRifInput`, `rifRules`):** Formato `J-12345678-9` (prefijos `J, G, V, E, P, C`).
+     * **Cédula de Identidad (`formatCedulaInput`, `cedulaRules`):** Formato `V-12345678` o `E-81234567` (6 a 9 dígitos).
+     * **Teléfono (`formatPhoneInput`, `phoneRules`):** Formato nacional `0414-1234567` / `0212-5551234` o internacional `+58 414-1234567`.
+     * **Correo Electrónico (`normalizeEmailInput`, `emailRules`):** Estructura completa con dominio y TLD válido.
+     * **Seriales, kVA, Checkpoints y Fotos:** Validación de seriales (`GEN-2026-0041`), potencia `> 0 kVA`, ubicaciones de puntos de control y archivos de imagen (`JPEG, PNG, WebP` hasta `5 MB`).
+   * **Backend (`baifa-api/app/Http/Requests/`):** Toda petición `POST`, `PUT` o `PATCH` debe validarse mediante su respectivo `FormRequest` con expresiones regulares equivalentes y mensajes de error en español.
+
+---
+
+## 4. 👥 Roles de Usuario (RBAC) y Control de Acceso
 
 El sistema implementa control de acceso basado en roles mediante Laravel Sanctum (`auth:sanctum`) y el middleware `role`:
 
@@ -38,15 +66,9 @@ El sistema implementa control de acceso basado en roles mediante Laravel Sanctum
 | **`client`** | Cliente Empresarial | Portal exclusivo de autogestión: visualización únicamente de los generadores asignados a su ficha fiscal (`client_id`) y consulta detallada de su trazabilidad. |
 | **Invitado (Público)** | Modo Huésped | Consulta pública de rastreo por serial (`/tracking/:serial` o `/tracking?serial=...`) estilo MRW con datos sensibles protegidos (`PublicGeneratorResource`). |
 
-### Credenciales Institucionales Sembradas (`DatabaseSeeder`)
-* **Superadministrador:** `admin@baifa.com.ve` / `12345678` (alterno: `admin@admin` / `12345678`)
-* **Gerente Operativo:** `gerente@baifa.com.ve` / `12345678`
-* **Operador de Campo:** `operador@baifa.com.ve` / `12345678`
-* **Cliente Demo:** `cliente.real@empresa.com` / `12345678`
-
 ---
 
-## 3. ⚡ Estados Logísticos del Generador (`GeneratorStatus`)
+## 5. ⚡ Estados Logísticos del Generador (`GeneratorStatus`)
 
 El ciclo de vida logístico de cada generador eléctrico es **100% manual** (auditado por operadores en campo) y consta de 5 estados:
 
@@ -60,7 +82,7 @@ El ciclo de vida logístico de cada generador eléctrico es **100% manual** (aud
 
 ---
 
-## 4. 🎨 Identidad Visual y Reglas de Interfaz (`baifa-ui`)
+## 6. 🎨 Identidad Visual y Reglas de Interfaz (`baifa-ui`)
 
 * **Tema Oscuro Permanente (Dark Mode Industrial):**
   * **Fondo Principal (`baifa.bg`):** `#0b1120`
@@ -75,18 +97,11 @@ El ciclo de vida logístico de cada generador eléctrico es **100% manual** (aud
 
 ---
 
-## 5. 🧼 Estándares de Backend (`baifa-api`)
+## 7. 🧼 Estándares de Backend (`baifa-api`) y Documentación (`baifa-docs`)
 
 1. **Flujo de Peticiones Limpio:**
    `Form Request (Validación en español)` -> `Controlador Delgado` -> `Modelo Eloquent` -> `API Resource (JSON estandarizado)`.
 2. **Logs Categorizados en Español:**
-   Prefijos estándar: `[AUTH_INFO]`, `[AUTH_ERROR]`, `[CLIENTES_INFO]`, `[CLIENTES_ERROR]`, `[GENERADORES_INFO]`, `[GENERADORES_ERROR]`, `[TRACKING_INFO]`, `[TRACKING_ERROR]`.
-3. **Documentación OpenAPI Sincronizada:**
-   Cualquier cambio en rutas o esquemas debe actualizarse simultáneamente en `baifa-api/docs/openapi.yaml` y `baifa-docs/api-spec/openapi.yaml`.
-4. **Estándar de Versionado:**
-   * Ramas y tags en GitHub: `release/vX.Y.Z` (actual: `release/v1.0.5`).
-   * Tags de imágenes en Docker Hub: `release-X.Y.Z` (actual: `release-1.0.5`).
-
----
-
-*Documento oficial actualizado y en vigencia técnica para todo el desarrollo y asistencia por IA de BaiFa Power Tracking.*
+   Prefijos estándar: `[AUTH_INFO]`, `[AUTH_ERROR]`, `[CLIENTES_INFO]`, `[CLIENTES_ERROR]`, `[GENERADORES_INFO]`, `[GENERADORES_ERROR]`, `[TRACKING_INFO]`, `[TRACKING_ERROR]`, `[REPORTES_INFO]`, `[REPORTES_ERROR]`.
+3. **Documentación Centralizada en `baifa-docs`:**
+   * Cualquier cambio en rutas, esquemas o versiones debe actualizarse simultáneamente en `baifa-api/docs/openapi.yaml` y en el repositorio de documentación `baifa-docs/api-spec/openapi.yaml`, además de registrar su nota de versión en `baifa-docs/releases/`.

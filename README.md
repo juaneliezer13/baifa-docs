@@ -15,7 +15,7 @@ baifa-docs/
 ├── 🤖 GEMINI.md                                  # Contexto técnico para Gemini / Antigravity
 │
 ├── 📋 api-spec/                                  # Especificaciones de la API RESTful
-│   └── openapi.yaml                              # Documentación OpenAPI 3.1 completa en español (v1.0.5)
+│   └── openapi.yaml                              # Documentación OpenAPI 3.1 completa en español (v1.0.7)
 │
 ├── 💼 business/                                  # Documentación comercial, reglas de negocio y diseño UI/UX
 │   ├── Propuesta Comercial Proyecto BaiFa.pdf    # Propuesta comercial oficial aprobada
@@ -40,7 +40,9 @@ baifa-docs/
 │   ├── RELEASE_NOTES_v1.0.2.md                   # Etapa 3 y 4: Puntos de Control (Checkpoints) y Timeline
 │   ├── RELEASE_NOTES_v1.0.3.md                   # Notificaciones por correo y consulta pública estilo MRW
 │   ├── RELEASE_NOTES_v1.0.4.md                   # Consolidación de URLs de notificaciones y contenedores
-│   └── RELEASE_NOTES_v1.0.5.md                   # Estandarización de API Base, rastreo público y despliegue
+│   ├── RELEASE_NOTES_v1.0.5.md                   # Estandarización de API Base, rastreo público y despliegue
+│   ├── RELEASE_NOTES_v1.0.6.md                   # Estandarización de puertos locales, limpieza y workspace
+│   └── RELEASE_NOTES_v1.0.7.md                   # Eliminación de data dummy y validaciones integrales de formularios
 │
 ├── 📊 informes/                                  # Informes formales de avance y entregas de etapa
 │   ├── INFORME_ENTREGA_ETAPA_1.md                # Resumen de entregables y validaciones de Etapa 1
@@ -82,7 +84,7 @@ baifa/
 
 ---
 
-## 🎯 Resumen de Etapas del Proyecto (`release/v1.0.5`)
+## 🎯 Resumen de Etapas del Proyecto (`release/v1.0.7`)
 
 | Etapa | Módulo Principal | Alcance | Estado |
 | :---: | :--- | :--- | :---: |
@@ -96,7 +98,7 @@ baifa/
 
 ## 🏷️ Estándar de Versionado Semántico y Ramas
 
-* **Ramas y Tags de Lanzamiento en Git/GitHub:** `release/vX.Y.Z` (última versión activa: `release/v1.0.5`).
-* **Tags de Imágenes en Docker Hub:** `release-X.Y.Z` (`juaneliezer13/baifa-api:release-1.0.5` y `juaneliezer13/baifa-ui:release-1.0.5`).
+* **Ramas y Tags de Lanzamiento en Git/GitHub:** `release/vX.Y.Z` (última versión activa: `release/v1.0.7`).
+* **Tags de Imágenes en Docker Hub:** `release-X.Y.Z` (`juaneliezer13/baifa-api:release-1.0.7` y `juaneliezer13/baifa-ui:release-1.0.7`).
 * **Rama de Desarrollo Activo:** `develop`.
 * **Rama de Producción Estable:** `main`.

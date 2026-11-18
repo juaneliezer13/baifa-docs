@@ -1,15 +1,17 @@
-# 🤖 GEMINI.md — Contexto para Gemini / Antigravity (BaiFa Power Tracking)
+# 🤖 GEMINI.md — Contexto y Reglas Técnicas para Gemini / Antigravity (BaiFa Power Tracking)
 
-Este proyecto sigue las especificaciones detalladas en [`AGENTS.md`](./AGENTS.md) y [`NORMAS_TECNICAS.md`](./NORMAS_TECNICAS.md).
+Este proyecto sigue obligatoriamente las especificaciones detalladas en [`AGENTS.md`](./AGENTS.md) y [`NORMAS_TECNICAS.md`](./NORMAS_TECNICAS.md).
 
-## Puntos Críticos a Recordar (`release/v1.0.5`)
+## Reglas Técnicas Obligatorias para Todas las Tareas (`release/v1.0.7`)
 
-1. **Estructura Limpia del Workspace (`baifa/`):**
-   * `baifa.code-workspace` y `.vscode/settings.json`: Configuración del workspace con la paleta corporativa de BaiFa Power (`#0b1120`, `#0f172a`, `#3eb134`, `#f97316`).
-   * `baifa-api/`: Backend RESTful en Laravel 12 + PHP 8.4-FPM + Nginx (Puerto **`14001`**) y MySQL 8.0 (Puerto **`14002`**).
-   * `baifa-ui/`: Frontend en Nuxt 4 + Vue 3 + Vuetify 3 + Tailwind CSS (Puerto **`15001`**).
-   * `baifa-docs/`: Repositorio central de documentación, reglas de negocio, OpenAPI, releases, informes y despliegue.
-   * La carpeta temporal `baifa-builds/` y los scripts/HTML intermedios de generación de PDFs fueron eliminados por estandarización.
-
-2. **Estado Funcional (`release/v1.0.5`):**
-   * Etapas 1 a 5 operativas: Autenticación Sanctum y Roles (`admin`, `manager`, `employee`, `client`), Directorio Fiscal de Clientes, Catálogo de Generadores con fotos, Trazabilidad con Checkpoints manuales, Consulta Pública estilo MRW para invitados (`/tracking`), Notificaciones por correo y Reportes con exportación CSV.
+1. **Estructura de Repositorios en el Workspace (`baifa/`):**
+   * `baifa-api/` (`git@github.com:juaneliezer13/baifa-api.git`): Backend RESTful en Laravel 12 + PHP 8.4-FPM + Nginx (Puerto **`14001`**) y MySQL 8.0 (Puerto **`14002`**).
+   * `baifa-ui/` (`git@github.com:juaneliezer13/baifa-ui.git`): Frontend en Nuxt 4 + Vue 3 + Vuetify 3 + Tailwind CSS (Puerto **`15001`**).
+   * `baifa-docs/` (`git@github.com:juaneliezer13/baifa-docs.git`): Repositorio independiente de documentación técnica, reglas de negocio, OpenAPI, releases, informes y despliegue.
+2. **Estándar de Releases y Tags (GitHub vs Docker Hub):**
+   * **GitHub (Ramas y Tags):** Formato obligatorio **`release/vX.Y.Z`** (ej. `release/v1.0.7`). **Nunca** usar tags `vX.Y.Z` sin el prefijo `release/`. Emplear siempre `refs/heads/release/vX.Y.Z` y `refs/tags/release/vX.Y.Z` en comandos Git.
+   * **Docker Hub:** Formato **`release-X.Y.Z`** (`juaneliezer13/baifa-api:release-1.0.7`, `juaneliezer13/baifa-ui:release-1.0.7`).
+3. **Ejecución y Calidad de Código:**
+   * Ejecutar comandos PHP/Artisan/Composer dentro de Docker (`docker compose exec app <comando>`).
+   * **PROHIBIDO** ejecutar `php artisan test`, `./vendor/bin/pint`, `npm test` o `eslint` automáticamente salvo petición expresa del usuario.
+   * Mantener **cero data dummy** en el código y usar las validaciones de `app/utils/validators.ts` (frontend) y `FormRequest` (backend) en todos los formularios.

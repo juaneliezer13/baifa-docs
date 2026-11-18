@@ -158,15 +158,11 @@ Esta guía detalla la configuración y despliegue del sistema **BaiFa (Frontend 
 
 ---
 
-## 👥 Cuentas de Acceso Iniciales
+## 👥 Cuenta de Acceso Inicial
 
 | Rol | Correo Electrónico | Contraseña Inicial |
 | :--- | :--- | :--- |
 | **Superadministrador** | `admin@baifa.com.ve` | `12345678` |
-| **Administrador Alterno** | `admin@admin` | `12345678` |
-| **Gerente Operativo** | `gerente@baifa.com.ve` | `12345678` |
-| **Operador de Campo** | `operador@baifa.com.ve` | `12345678` |
-| **Cliente Demo** | `cliente.real@empresa.com` | `12345678` |
 
 > [!IMPORTANT]
 > Cambia estas contraseñas inmediatamente desde el módulo de Usuarios tras iniciar sesión en producción.
